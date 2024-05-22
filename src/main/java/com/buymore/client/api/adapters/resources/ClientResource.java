@@ -26,8 +26,6 @@ public class ClientResource {
     HttpServerRequest srvRequest;
 
     @POST
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response createClient(ClientRecord request){
         try {
             UUID clientId = this.service.saveClient(request);
@@ -41,8 +39,6 @@ public class ClientResource {
 
     @Path("load/{clientId}")
     @GET
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response loadClient(@PathParam("clientId") String clientId){
         ClientEntity response =service.loadClientEntity(clientId).orElseThrow(IllegalAccessError::new);
         return Response.ok(response).build();
@@ -50,8 +46,6 @@ public class ClientResource {
 
     @GET
     @Path("listAll")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
     public Response listAllClients(){
         List<ClientEntity> response = this.service.listAllClients();
         return Response.ok(response).build();
