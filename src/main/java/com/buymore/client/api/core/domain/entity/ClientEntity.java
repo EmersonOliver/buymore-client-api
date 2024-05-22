@@ -1,6 +1,7 @@
 package com.buymore.client.api.core.domain.entity;
 
 import com.buymore.client.api.core.domain.records.ClientRecord;
+import com.buymore.client.api.core.utils.CryptUtils;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,10 +26,10 @@ public class ClientEntity  {
     @Column(name = "clientName" , nullable = false, length = 40)
     private String clientName;
 
-    @Column(name = "client_pass", nullable = false, length = 32)
+    @Column(name = "client_pass", nullable = false, columnDefinition = "TEXT")
     private String clientPass;
 
-    @Column(name = "client_salt", nullable = false, length = 40)
+    @Column(name = "client_salt", nullable = false, columnDefinition = "TEXT")
     private String clientSalt;
 
     @Column(name = "wallet_balance", nullable = false)
@@ -47,7 +48,8 @@ public class ClientEntity  {
         pk.setEmail(record.email());
         this.clientPk = pk;
         this.clientName = record.clientName();
-        this.clientPass =record.password();
+        this.clientSalt = CryptUtils.salt();
+        this.clientPass = CryptUtils.passwordCreated(record.password(), this.clientSalt);
         this.fkClientType = record.typeClient();
         this.walletBalance = record.balance();
         return this;
