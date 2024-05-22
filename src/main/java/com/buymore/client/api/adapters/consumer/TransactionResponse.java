@@ -15,9 +15,10 @@ import java.math.BigDecimal;
 @Jacksonized
 public class TransactionResponse {
 
-    private String payer;
-    private String paying;
-    private String correlationId;
+    private String clientIdSend;
+    private String clientIdReceive;
+    private String transactionId;
+    private String typeTransaction;
     private String movementDate;
-    private BigDecimal valTransaction;
+    private BigDecimal transactionValue;
 }

@@ -53,15 +53,24 @@ public class ClientService {
 
     @Transactional
     public void updateBalance(TransactionResponse rsp) {
-        ClientEntity client = this.loadClientEntity(rsp.getPayer()).orElse(null);
-        if (client == null) {
+        ClientEntity clientReceive = this.loadClientEntity(rsp.getClientIdReceive()).orElse(null);
+        ClientEntity clientSender = this.loadClientEntity(rsp.getClientIdSend()).orElse(null);
+
+        if (clientReceive == null || clientSender == null) {
             throw new BuymoreApiException("Client not found by id", Response.Status.BAD_REQUEST);
         }
-        BigDecimal wallet = client.getWalletBalance();
-        BigDecimal transaction = rsp.getValTransaction();
-        BigDecimal result = wallet.add(transaction);
-        client.setWalletBalance(result);
-        this.clientRepository.persistAndFlush(client);
+
+        BigDecimal walletReceiver = clientReceive.getWalletBalance();
+        BigDecimal valueTransaction = rsp.getTransactionValue();
+
+        BigDecimal result = walletReceiver.add(valueTransaction);
+        clientReceive.setWalletBalance(result);
+        this.clientRepository.persistAndFlush(clientReceive);
+
+        BigDecimal walletSender = clientSender.getWalletBalance();
+        BigDecimal resultSender = walletSender.subtract(valueTransaction);
+        clientSender.setWalletBalance(resultSender);
+        this.clientRepository.persistAndFlush(clientSender);
     }
 
     @Transactional
